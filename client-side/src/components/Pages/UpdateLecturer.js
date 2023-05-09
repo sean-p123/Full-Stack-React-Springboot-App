@@ -6,11 +6,11 @@ export function UpdateLecturer() {
 
   const [lecturer, setLecturer] = useState(null);
   const [name, setName] = useState('');
-  const [taxband, setTaxband] = useState('');
   const [salaryScale, setSalaryScale] = useState('');
-
-  
-    console.log(taxband)
+  const [taxBand, setTaxband] = useState('');
+  const [updateStatus, setUpdateStatus] = useState('');
+    console.log(name)
+    console.log(taxBand)
   const lid = id;
  
   useEffect(() => {
@@ -20,8 +20,10 @@ export function UpdateLecturer() {
         const data = await response.json();
         setLecturer(data);
         setName(data.name);
-        setTaxband(data.taxband);
         setSalaryScale(data.salaryScale);
+        setTaxband(data.taxBand || '');
+     
+        console.log(data)
       } catch (error) {
         console.error('Error fetching lecturer:', error);
       }
@@ -54,8 +56,15 @@ export function UpdateLecturer() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, taxband, salaryScale }),
+        
+        body: JSON.stringify({ name, taxBand, salaryScale }),
+        
       });
+      if (response.ok) {
+        setUpdateStatus('Lecturer updated successfully');
+      } else {
+        setUpdateStatus('Failed to update lecturer');
+      }
       // Handle the response or perform any other necessary actions
     } catch (error) {
       console.error('Error updating lecturer:', error);
@@ -67,6 +76,10 @@ export function UpdateLecturer() {
     return <div>Loading...</div>;
   }
 
+  function Updated(){
+    return(
+       <h1>Lecturer Updated</h1>);
+  }
   
 
   return (
@@ -88,7 +101,7 @@ export function UpdateLecturer() {
           <input
             type="text"
             id="taxband"
-            value={taxband}
+            value={taxBand}
             onChange={handleTaxbandChange}
           />
         </div>
@@ -101,8 +114,9 @@ export function UpdateLecturer() {
             onChange={handleSalaryScaleChange}
           />
         </div>
-        <button type="submit">Update</button>
+        <button className="update-button" type="submit" >Update</button>
       </form>
+      {updateStatus && <p>{updateStatus}</p>}
     </div>
     </div>
   );
